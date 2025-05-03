@@ -1,11 +1,17 @@
-import React, { useState } from "react";
-import { MoveDown, MoveUp } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { MoveDown, MoveUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import flowers from "../../assets/images/organexpandpage/flowers.png";
 
 function Testimonials({ image, type }) {
   // Single state to track which FAQ is expanded, -1 means none
   const [expandedFAQ, setExpandedFAQ] = useState(null);
+
+  // Carousel state
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef(null);
+  const [carouselWidth, setCarouselWidth] = useState(0);
+  const [itemsPerSlide, setItemsPerSlide] = useState(4);
 
   // Toggle function for FAQs
   const toggleFAQ = (index) => {
@@ -541,45 +547,148 @@ function Testimonials({ image, type }) {
     },
   };
 
+  // Carousel navigation
+  const nextSlide = () => {
+    if (currentFacts.fact.length <= itemsPerSlide) return;
+
+    const maxSlide = Math.ceil(currentFacts.fact.length / itemsPerSlide) - 1;
+    setCurrentSlide((prev) => (prev === maxSlide ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    if (currentFacts.fact.length <= itemsPerSlide) return;
+
+    const maxSlide = Math.ceil(currentFacts.fact.length / itemsPerSlide) - 1;
+    setCurrentSlide((prev) => (prev === 0 ? maxSlide : prev - 1));
+  };
+
+  // Handle responsive carousel
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setItemsPerSlide(1);
+      } else if (width < 768) {
+        setItemsPerSlide(2);
+      } else if (width < 1024) {
+        setItemsPerSlide(3);
+      } else {
+        setItemsPerSlide(4);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Calculate visible items for current slide
+  const getVisibleItems = () => {
+    const start = currentSlide * itemsPerSlide;
+    const end = start + itemsPerSlide;
+    return currentFacts.fact.slice(start, end);
+  };
+
+  // Calculate dots for pagination
+  const totalDots = Math.ceil(currentFacts.fact.length / itemsPerSlide);
+
   return (
     <div className="">
       <div className="bg-white">
-        <motion.div
-          className="flex flex-col !p-20"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={fadeInUp}
-        >
-          <p className="!text-gray-300">{currentFacts.sub}</p>
-          <div className="flex items-center gap-5">
-            <h2 className="!text-4xl !font-medium !text-gray-800">
+        {/* facts section starts here */}
+        <div className="flex flex-col !p-20">
+          <style jsx>{`
+            .flip-card:hover .flip-card-inner {
+              transform: rotateY(180deg);
+            }
+            .flip-card-inner {
+              position: relative;
+              width: 100%;
+              height: 100%;
+              transition: transform 0.6s;
+              transform-style: preserve-3d;
+            }
+            .flip-card-front,
+            .flip-card-back {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              backface-visibility: hidden;
+            }
+            .flip-card-back {
+              transform: rotateY(180deg);
+            }
+          `}</style>
+
+          <p className="text-gray-300">{currentFacts.sub}</p>
+          <div className="flex flex-wrap items-center !gap-5">
+            <h2 className="!text-4xl font-medium !text-gray-800">
               {currentFacts.title}
             </h2>
             <p className="!text-8xl !font-thin !text-gray-300">/</p>
-            <div className=" !text-gray-600 !mt-1">
+            <div className="text-gray-600 mt-1">
               <p>{currentFacts.description}</p>
             </div>
           </div>
 
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 !p-4 !mt-10"
-            variants={staggerContainer}
-          >
-            {currentFacts.fact.map((testimonial, i) => (
-              <motion.div
-                key={i}
-                className="flex flex-col justify-between gap-3 !px-6 !py-20 cursor-pointer rounded-3xl bg-[#F1F2ED] hover:bg-[#022759] transition-all duration-300 group"
-                variants={fadeInUp}
+          {/* Carousel Container */}
+          <div className="relative !mt-10">
+            <div className="flex items-center justify-between w-full !!mb-6">
+              <button
+                onClick={prevSlide}
+                className="!bg-gray-100 !hover:bg-gray-200 !p-3 rounded-full shadow-md transition-all duration-300"
+                disabled={currentSlide === 0}
               >
-                <h4 className="group-hover:!text-white">{testimonial.title}</h4>
-                <p className="!text-gray-800 group-hover:!text-white !text-lg !font-normal !mb-4 transition-colors duration-300">
-                  {testimonial.description}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
+                <ChevronLeft size={24} />
+              </button>
+
+              <div className="flex space-x-2">
+                {Array.from({ length: totalDots }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 !p-2 ${
+                      idx === currentSlide ? "bg-[#022759]" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={nextSlide}
+                className="bg-gray-100 hover:bg-gray-200 rounded-full shadow-md transition-all duration-300 !p-2"
+                disabled={currentSlide === totalDots - 1}
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
+
+            {/* Flip Cards */}
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 !p-4"
+              ref={carouselRef}
+            >
+              {getVisibleItems().map((fact, i) => (
+                <div key={`${currentSlide}-${i}`} className="flip-card h-80">
+                  <div className="flip-card-inner">
+                    {/* Front of Card */}
+                    <div className="flip-card-front rounded-3xl bg-[#F1F2ED] flex items-center justify-center !p-8 ">
+                      <h4 className="text-center text-xl font-medium">
+                        {fact.title}
+                      </h4>
+                    </div>
+
+                    {/* Back of Card */}
+                    <div className="flip-card-back rounded-3xl bg-gray-200 !text-black flex items-center justify-center !p-8 shadow-md overflow-auto">
+                      <p className="text-center">{fact.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* facts section ends here */}
 
         {/* faq starts here */}
         <motion.div
@@ -602,7 +711,7 @@ function Testimonials({ image, type }) {
 
           {/* Fixed FAQ mapping */}
           <motion.div
-            className="grid grid-cols-2 gap-8 !mt-10"
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 !mt-10"
             variants={faqContainer}
             initial="hidden"
             animate="visible"
@@ -685,7 +794,7 @@ function Testimonials({ image, type }) {
             </div>
 
             <motion.div
-              className="grid grid-cols-4 gap-4 !p-4 !mt-10"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 !p-4 !mt-10"
               variants={staggerContainer}
             >
               {currentBenefits.insight.slice(0, 7).map((item, index) => (
@@ -736,7 +845,88 @@ function Testimonials({ image, type }) {
         </motion.div>
       </div>
 
-     
+      <motion.div
+        className="bg-[#E7FFC9] w-full !p-20 !mb-20"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeInUp}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 !p-4">
+          {/* Footer section */}
+          <motion.div
+            className="bg-white !px-6 sm:!px-10 md:!px-20 !py-10 md:!py-20 rounded-2xl shadow-md flex flex-col gap-10 w-full"
+            variants={fadeInLeft}
+          >
+            <p className="!text-4xl !text-black !font-semibold">Solus</p>
+            <div className="flex items-start justify-between gap-5 sm:gap-10 w-full">
+              <div className="flex flex-col gap-5">
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  About
+                </p>
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Services
+                </p>
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Therapist
+                </p>
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Resources
+                </p>
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Contact
+                </p>
+              </div>
+              <div className="flex flex-col gap-5">
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Instagram
+                </p>
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Facebook
+                </p>
+
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  YouTube
+                </p>
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  LinkedIn
+                </p>
+              </div>
+              <div className="flex flex-col gap-5">
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Terms of use
+                </p>
+                <p className="!text-sm !text-gray-400 hover:!text-gray-700 cursor-pointer">
+                  Privacy Policy
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Support section */}
+          <motion.div
+            className="bg-[#022759] !pl-6 sm:!pl-10 md:!pl-20 !py-10 md:!py-20 rounded-2xl shadow-lg w-full lg:w-auto !mt-5 lg:!mt-0"
+            variants={fadeInRight}
+          >
+            <div className="!flex !flex-col md:!flex-row items-center justify-between ">
+              <p className="!text-white !text-4xl md:!text-4xl !font-semibold !mb-6 md:!mb-0 max-w-md">
+                Find Support,
+                <br /> Guidance, <br />
+                and Balance.
+              </p>
+
+              <img
+                src={flowers}
+                alt="Decorative flowers"
+                className="w-40 md:w-1/3 h-auto !right-0"
+              />
+            </div>
+            <button className="bg-white hover:bg-gray-100 !text-[#022759] !font-bold !py-3 !px-8 rounded-full transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+              Find Support Now
+            </button>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 }
