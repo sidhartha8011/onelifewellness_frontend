@@ -52,6 +52,104 @@ function Testimonials({ image, type }) {
           "Neurons send signals across your body in just milliseconds—faster than any computer, enabling instant reactions and decisions.",
       },
     ],
+    heart: [
+      {
+        question: " Your heart powers your body nonstop",
+        answer:
+          "It beats about 100,000 times a day—pumping blood to deliver oxygen and nutrients to every cell, even while you sleep.",
+      },
+      {
+        question: " Emotions affect your heartbeat",
+        answer:
+          "Joy, anxiety, and fear all trigger changes in heart rate and rhythm, showing the deep link between emotional and physical health.",
+      },
+      {
+        question: " Women may feel heart attacks differently",
+        answer:
+          "While chest pain is common, women often feel fatigue, shortness of breath, nausea, or jaw pain instead—making it harder to detect.",
+      },
+      {
+        question: " Exercise builds a stronger heart",
+        answer:
+          "Aerobic activity strengthens your heart muscle, helping it pump more efficiently and reduce long-term risk for disease.",
+      },
+      {
+        question: " Your heart has its own pacemaker",
+        answer:
+          "The sinoatrial (SA) node creates electrical impulses that set your heartbeat—like a built-in rhythm generator.",
+      },
+      {
+        question: " Heart disease can begin early",
+        answer:
+          "Plaque can start forming in arteries during your 20s or 30s—long before symptoms appear, which is why prevention matters early.",
+      },
+    ],
+  
+    stomach: [
+      {
+        question: " Your gut houses 100 trillion microbes",
+        answer:
+          "These bacteria, viruses, and fungi help digest food, regulate immunity, and even influence your mood and focus.",
+      },
+      {
+        question: " You produce 90% of serotonin in your gut",
+        answer:
+          "This “feel-good” neurotransmitter isn’t just made in the brain—your gut plays a major role in emotional health.",
+      },
+      {
+        question: " Digestion starts in your mouth",
+        answer:
+          "Enzymes in your saliva begin breaking down food before it even reaches your stomach.",
+      },
+      {
+        question: " Your gut is part of your immune system",
+        answer:
+          "More than 70% of your immune cells live in your gut, helping to fight off infection and regulate inflammation.",
+      },
+      {
+        question: " Fiber feeds your good bacteria",
+        answer:
+          "Prebiotic fibers from fruits, vegetables, and whole grains fuel the healthy microbes that protect your gut lining.",
+      },
+      {
+        question: " Your gut-brain connection is real",
+        answer:
+          "The vagus nerve links your digestive system to your brain—so what you eat can impact how you feel mentally and emotionally.",
+      },
+    ],
+  
+    muscleArm: [
+      {
+        question: " You have over 600 muscles",
+        answer:
+          "Muscles make up nearly 40% of your body weight and are responsible for every movement—from blinking to lifting.",
+      },
+      {
+        question: " Bones are living tissue",
+        answer:
+          "They’re constantly breaking down and rebuilding through a process called remodeling, which helps maintain strength and flexibility.",
+      },
+      {
+        question: " Posture affects more than your spine",
+        answer:
+          "Poor posture can strain joints, cause headaches, and even affect breathing—while good alignment supports long-term mobility.",
+      },
+      {
+        question: " Muscle loss begins in your 30s",
+        answer:
+          "Without regular exercise, adults can lose up to 8% of muscle mass per decade, affecting balance and strength.",
+      },
+      {
+        question: " Stretching improves circulation",
+        answer:
+          "Gentle stretching keeps muscles flexible, reduces tension, and boosts blood flow—especially helpful after long periods of sitting.",
+      },
+      {
+        question: " Strength training protects your bones",
+        answer:
+          "Lifting weights or using resistance bands stimulates bone growth and helps prevent osteoporosis as you age.",
+      },
+    ],
   };
 
   const currentFaq = allFAQs[type];
@@ -491,14 +589,14 @@ function Testimonials({ image, type }) {
           viewport={{ once: true }}
           variants={fadeInUp}
         >
-          <p className="!text-gray-300">FAQ</p>
+          <p className="!text-gray-300">Facts</p>
           <div className="flex items-center gap-5">
             <h2 className="!text-4xl !font-medium !text-gray-800">
-              Frequently Asked Questions
+            Fast Facts: Surprising Things You Might Not Know
             </h2>
             <p className="!text-8xl !font-thin !text-gray-300">/</p>
             <div className=" !text-gray-600 !mt-1">
-              <p>Meal planning made easy: your questions, answered</p>
+              <p>Quick Insights That Matter</p>
             </div>
           </div>
 
