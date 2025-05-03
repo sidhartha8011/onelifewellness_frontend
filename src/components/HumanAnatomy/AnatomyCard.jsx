@@ -45,7 +45,7 @@ function AnatomyCard({ organType }) {
       ],
       cardClass: "absolute z-10 right-[8.8%] top-[10%]",
     },
-    "muscle-arm": {
+    muscleArm: {
       image: muscle,
       title: "Skeletal Muscles",
       shortDesc: "Tissues that enable body movement and maintain posture.",

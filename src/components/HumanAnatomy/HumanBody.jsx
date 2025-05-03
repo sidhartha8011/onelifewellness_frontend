@@ -27,7 +27,7 @@ function HumanBody({ organType }) {
         src: heartLine,
         className: "absolute top-[10%] left-[48.6%] w-[255px]", // Adjust these values manually
       },
-      "muscle-arm": {
+      muscleArm: {
         src: muscleLine,
         className: "absolute top-[19%] left-[54.5%] w-[250px]", // Adjust these values manually
       },
@@ -113,7 +113,7 @@ function HumanBody({ organType }) {
       <AnatomyPoint
         top="top-[20%]"
         left="left-[54%]"
-        name="muscle-arm"
+        name="muscleArm"
         label="Muscles"
       />
 
